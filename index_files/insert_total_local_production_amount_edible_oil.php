@@ -1,25 +1,25 @@
 <?php
-// inserttotal_supply_amount_edible_oil.php
+// insert total_local_production_amount_edible_oil.php
 
 // Include the database connection
 include('db_connect.php');
 
-// SQL query to drop the 'total_supply_amount_edible_oil' table if it exists
-$dropTableSQL = "DROP TABLE IF EXISTS total_supply_amount_edible_oil";
+// SQL query to drop the 'total_local_production_amount_edible_oil' table if it exists
+$dropTableSQL = "DROP TABLE IF EXISTS total_local_production_amount_edible_oil";
 
 // Execute the query to drop the table
 if ($conn->query($dropTableSQL) === TRUE) {
-    echo "Table 'total_supply_amount_edible_oil' dropped successfully.<br>";
+    echo "Table 'total_local_production_amount_edible_oil' dropped successfully.<br>";
 } else {
-    echo "Error dropping table 'total_supply_amount_edible_oil': " . $conn->error . "<br>";
+    echo "Error dropping table 'total_local_production_amount_edible_oil': " . $conn->error . "<br>";
 }
 
-// SQL query to create the 'total_supply_amount_edible_oil' table with foreign keys
+// SQL query to create the 'total_local_production_amount_edible_oil' table with foreign keys
 $createTableSQL = "
-    CREATE TABLE total_supply_amount_edible_oil (
+    CREATE TABLE total_local_production_amount_edible_oil (
         DataID INT PRIMARY KEY AUTO_INCREMENT,
         FoodTypeID INT,
-        RawCrops VARCHAR(50),
+        
         VehicleID INT,
         ConvertedUnit VARCHAR(50),
         CValue DECIMAL(10, 3),
@@ -36,13 +36,13 @@ $createTableSQL = "
 
 // Execute the query to create the table
 if ($conn->query($createTableSQL) === TRUE) {
-    echo "Table 'total_supply_amount_edible_oil' created successfully with foreign keys.<br>";
+    echo "Table 'total_local_production_amount_edible_oil' created successfully with foreign keys.<br>";
 } else {
-    echo "Error creating table 'total_supply_amount_edible_oil': " . $conn->error . "<br>";
+    echo "Error creating table 'total_local_production_amount_edible_oil': " . $conn->error . "<br>";
 }
 
 // Path to your uploaded CSV file
-$csvFile = 'total_supply_amount_edible_oil.csv';  // Update with the exact path of your CSV file
+$csvFile = 'total_local_production_amount_edible_oil.csv';  // Update with the exact path of your CSV file
 
 // Open the CSV file for reading
 if (($handle = fopen($csvFile, "r")) !== FALSE) {
@@ -51,8 +51,8 @@ if (($handle = fopen($csvFile, "r")) !== FALSE) {
     fgetcsv($handle);
 
     // Prepare the SQL statement with placeholders
-    $stmt = $conn->prepare("INSERT INTO total_supply_amount_edible_oil (FoodTypeID, RawCrops, VehicleID, ConvertedUnit, CValue, StartYear, EndYear, AccessedDate, Source, Link, DataType, ProcessToObtainData) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO total_local_production_amount_edible_oil (FoodTypeID, VehicleID, ConvertedUnit, CValue, StartYear, EndYear, AccessedDate, Source, Link, DataType, ProcessToObtainData) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     // Check if the statement was prepared successfully
     if ($stmt === FALSE) {
@@ -68,7 +68,7 @@ if (($handle = fopen($csvFile, "r")) !== FALSE) {
 
             // Extract relevant columns from the CSV data
             $foodTypeID = mysqli_real_escape_string($conn, trim($data[1])); // FoodTypeID
-            $rawCrops = mysqli_real_escape_string($conn, trim($data[2])); // Raw Crops
+            // $rawCrops = mysqli_real_escape_string($conn, trim($data[2])); // Raw Crops
             $vehicleID = mysqli_real_escape_string($conn, trim($data[4])); // VehicleID
             $convertedUnit = mysqli_real_escape_string($conn, trim($data[6])); // Converted Unit
             $CValue = mysqli_real_escape_string($conn, trim($data[8])); // CValue
@@ -81,7 +81,7 @@ if (($handle = fopen($csvFile, "r")) !== FALSE) {
             $ProcessToObtainData = mysqli_real_escape_string($conn, trim($data[15])); // ProcessToObtainData
 
             // Bind parameters
-            $stmt->bind_param("isssssssssss", $foodTypeID, $rawCrops, $vehicleID, $convertedUnit, $CValue, $startYear, $endYear, $accessedDate, $source, $link, $dataType, $ProcessToObtainData);
+            $stmt->bind_param("issssssssss", $foodTypeID, $vehicleID, $convertedUnit, $CValue, $startYear, $endYear, $accessedDate, $source, $link, $dataType, $ProcessToObtainData);
 
             // Execute the query
             if ($stmt->execute() === TRUE) {
