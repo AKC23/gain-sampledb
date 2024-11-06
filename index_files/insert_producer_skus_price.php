@@ -71,7 +71,7 @@ if (($handle = fopen($csvFilePath, "r")) !== FALSE) {
                 $row[6], // BrandID
                 $row[7], // SKU
                 $row[8], // Packaging
-                $row[10], // Price
+                $row[9], // Price
                 $row[11], // FoodTypeID
                 $row[12], // SourceURL
                 $row[13], // DateAccessed
